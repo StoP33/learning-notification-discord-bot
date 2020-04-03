@@ -3,7 +3,7 @@ const notification = require('./modules/notification');
 
 const username = 'ITITIU19180';
 const password = 'Findtheaim2020';
-const token = 'Njk0OTE0OTM0ODA2NTQ0Mzk1.XoSkqA.IydrcLUACuAXMsDCR4rLbyfOonw';
+const token = 'Njk0OTE0OTM0ODA2NTQ0Mzk1.XocdDQ.81XR8Edu9L-Nm3y8nOd6Nh90YNY';
 
 const client = new Discord.Client();
 
