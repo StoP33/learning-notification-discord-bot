@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
 const notification = require('./modules/notification');
 
-const username = process.env.ID;
-const password = process.env.PASSWORD;
-const token = process.env.TOKEN;
+const username = 'ITITIU19180';
+const password = 'Findtheaim2020';
+const token = 'Njk0OTE0OTM0ODA2NTQ0Mzk1.XoSkqA.IydrcLUACuAXMsDCR4rLbyfOonw';
 
 const client = new Discord.Client();
 
