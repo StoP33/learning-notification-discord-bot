@@ -18,7 +18,7 @@ module.exports.getNotification = async function (username, password) {
                         description:
                             `${updates.data[key].itemSpecificData.contentExtract || 'Unavailable content'}`,
                         link:
-                            `https://blackboard.hcmiu.edu.vn${updates.data[key].se_itemUri || '#'}`,
+                            `${process.env.HOST}${updates.data[key].se_itemUri || '#'}`,
                         author:
                             `${updates.data[key].itemSpecificData.notificationDetails.announcementLastName || 'Anonymous'}
                              ${updates.data[key].itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'}`,
