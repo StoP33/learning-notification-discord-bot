@@ -26,7 +26,8 @@ client.on('ready', () => {
             });
         }
         else {
-            client.channels.cache.find(x => x.name === 'blackboard').send(notices.data);
+            //client.channels.cache.find(x => x.name === 'blackboard').send(notices.data);
+            console.log('hihi');
         }
     }, 300000);
 });
