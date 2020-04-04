@@ -10,8 +10,9 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log('Successful restart :D');
-    client.channels.cache.find(x => x.name === 'blackboard').send('Successful restart :D');
+    client.channels.cache.find(x => x.name === 'blackboard-notification').send('Successful restart :D');
     setInterval(async () => {
+        let counter = 0;
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
 
@@ -25,13 +26,15 @@ client.on('ready', () => {
                     .addFields(notices.data[key].fields)
                     .setTimestamp()
                     .setColor(notices.data[key].color);
-                client.channels.cache.find(x => x.name === 'blackboard').send(embed);
+                client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
             });
         }
         else {
-            //client.channels.cache.find(x => x.name === 'blackboard').send(notices.data);
+            //client.channels.cache.find(x => x.name === 'blackboard-notification').send(notices.data);
             console.log(notices.data);
         }
+        counter++;
+        client.user.setPresence({ activity: { name: ` - access: ${counter} times` }, status: 'idle' });
     }, 300000);
 });
 
