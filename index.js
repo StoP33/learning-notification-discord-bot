@@ -9,8 +9,8 @@ const token = process.env.TOKEN;
 const client = new Discord.Client();
 
 client.on('ready', () => {
-    console.log('Ok i\'m ready!');
-    client.channels.cache.find(x => x.name === 'blackboard').send('Ok i\'m ready!');
+    console.log('Successful restart :D');
+    client.channels.cache.find(x => x.name === 'blackboard').send('Successful restart :D');
     setInterval(async () => {
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
@@ -29,7 +29,8 @@ client.on('ready', () => {
             });
         }
         else {
-            client.channels.cache.find(x => x.name === 'blackboard').send(notices.data);
+            //client.channels.cache.find(x => x.name === 'blackboard').send(notices.data);
+            console.log(notices.data);
         }
     }, 300000);
 });
