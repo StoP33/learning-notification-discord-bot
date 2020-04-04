@@ -11,8 +11,9 @@ const client = new Discord.Client();
 client.on('ready', () => {
     console.log('Successful restart :D');
     client.channels.cache.find(x => x.name === 'blackboard-notification').send('Successful restart :D');
+
+    let counter = 0;
     setInterval(async () => {
-        let counter = 0;
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
 
