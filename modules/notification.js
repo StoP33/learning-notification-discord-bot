@@ -68,17 +68,11 @@ class Notification
                         });
                     }
                 });
-                return links;
+                return links.length
+                    ? links
+                    : { name: 'Unavailable link', value: 'Could not find the link', inline: false };
             }
         });
-
-        links.push({
-            name: 'Unavailable link',
-            value: 'Could not find the link',
-            inline: false
-        });
-
-        return links;
     }
 }
 
