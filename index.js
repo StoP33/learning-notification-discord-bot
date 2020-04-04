@@ -12,15 +12,17 @@ client.on('ready', () => {
     console.log('Ok i\'m ready!');
     client.channels.cache.find(x => x.name === 'blackboard').send('Ok i\'m ready!');
     setInterval(async () => {
-        let notices = await notification.getNotification(username, password);
+        let notify = new notification(username, password);
+        let notices = await notify.getNotification();
 
         if (notices.success) {
             Object.keys(notices.data).forEach(function (key) {
                 const embed = new Discord.MessageEmbed()
                     .setTitle(notices.data[key].title)
-                    .setURL(notices.data[key].link)
-                    .setAuthor(notices.data[key].author)
+                    .setURL(notices.data[key].url)
+                    .setAuthor('From: ' + notices.data[key].author)
                     .setDescription(notices.data[key].description)
+                    .addFields(notices.data[key].fields)
                     .setTimestamp()
                     .setColor(notices.data[key].color);
                 client.channels.cache.find(x => x.name === 'blackboard').send(embed);
@@ -36,6 +38,9 @@ client.on('message', async (message) => {
     if (message.content === '!die') {
         message.channel.send('I still live');
     }
-})
+    else if (message.content === '!test') {
+        message.channel.send('!test con cac');
+    }
+});
 
 client.login(token);
