@@ -20,8 +20,9 @@ class Notification
 
             if (this.loggedIn) {
                 return new Promise(async (resolve, reject) => {
+                    let lastKey = Object.keys(updates.data).length;
                     Object.keys(updates.data).forEach(async (key) => {
-                        if (updates.data[key].itemSpecificData.notificationDetails.seen === false) {
+                        if (!updates.data[key].itemSpecificData.notificationDetails.seen) {
                             let body = await this.bb.sendRequest({},
                                 `${updates.data[key].se_itemUri || '#'}`);
                             let fields = this.getLink(body);
@@ -39,8 +40,8 @@ class Notification
                                 color: '#f50057'
                             });
                         }
+                        key >= (lastKey -1) ? resolve({ success: true, data: notices }) : '';
                     });
-                    setTimeout(() => {resolve({ success: true, data: notices });}, 20000);
                 });
             }
             return { success: false, data: 'login failed' };
@@ -53,37 +54,29 @@ class Notification
     getLink(html = '<div></div>')
     {
         let links = [];
+        let ids = ['#pageList', '#announcementList'];
         let $ = cheerio.load(html);
 
-        if($('#pageList').text()) {
-            $('#pageList').find('a').each((index, element) => {
-                if ($(element).attr('href') != '#contextMenu' && $(element).attr('href') != '#close') {
-                    links.push({
-                        name: $(element).text(),
-                        value: `${$(element).attr('href')[0] === '/' ? this.host + $(element).attr('href') : $(element).attr('href')}`,
-                        inline: false
-                    });
-                }
-            });
-        }
-        else if($('#announcementList').text()) {
-            $('#announcementList').find('a').each((index, element) => {
-                if ($(element).attr('href') != '#contextMenu' && $(element).attr('href') != '#close') {
-                    links.push({
-                        name: $(element).text(),
-                        value: `${$(element).attr('href')[0] === '/' ? this.host + $(element).attr('href') : $(element).attr('href')}`,
-                        inline: false
-                    });
-                }
-            });
-        }
-        else {
-            links.push({
-                name: 'Unavailable link',
-                value: 'Could not find the link',
-                inline: false
-            });
-        }
+        ids.forEach((id) => {
+            if($(id).text()) {
+                $(id).find('a').each((index, element) => {
+                    if ($(element).attr('href') != '#contextMenu' && $(element).attr('href') != '#close') {
+                        links.push({
+                            name: $(element).text(),
+                            value: `${$(element).attr('href')[0] === '/' ? this.host + $(element).attr('href') : $(element).attr('href')}`,
+                            inline: false
+                        });
+                    }
+                });
+                return links;
+            }
+        });
+
+        links.push({
+            name: 'Unavailable link',
+            value: 'Could not find the link',
+            inline: false
+        });
 
         return links;
     }
