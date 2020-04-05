@@ -12,8 +12,10 @@ client.on('ready', () => {
     console.log('Successful restart :D');
     client.channels.cache.find(x => x.name === 'blackboard-notification').send('Successful restart :D');
 
-    let counter = 0;
+    let successCounter = 0;
+    let errorCounter = 0;
     setInterval(async () => {
+        counter++;
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
 
@@ -29,13 +31,14 @@ client.on('ready', () => {
                     .setColor(notices.data[key].color);
                 client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
             });
+            successCounter++;
         }
         else {
             //client.channels.cache.find(x => x.name === 'blackboard-notification').send(notices.data);
             console.log(notices.data);
+            errorCounter++;
         }
-        counter++;
-        client.user.setPresence({ activity: { name: ` - access: ${counter} times` }, status: 'idle' });
+        client.user.setActivity(`e: ${errorCounter} - s: ${successCounter}`, { type: 'WATCHING' });
     }, 300000);
 });
 
