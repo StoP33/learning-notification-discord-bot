@@ -15,7 +15,6 @@ client.on('ready', () => {
     let successCounter = 0;
     let errorCounter = 0;
     setInterval(async () => {
-        counter++;
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
 
