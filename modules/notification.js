@@ -23,7 +23,7 @@ class Notification
             if (this.loggedIn) {
                 return new Promise(async (resolve, reject) => {
                     Object.keys(data).forEach(async (key) => {
-                        if (data[key].itemSpecificData.notificationDetails.seen === true) {
+                        if (data[key].itemSpecificData.notificationDetails.seen === false) {
                             let body = await this.bb.sendRequest({},
                                 `${data[key].se_itemUri || '#'}`);
                             let fields = this.getLink(body);
