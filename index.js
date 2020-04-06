@@ -38,7 +38,7 @@ client.on('ready', () => {
             errorCounter++;
         }
         client.user.setActivity(`e: ${errorCounter} - s: ${successCounter}`, { type: 'WATCHING' });
-    }, 300000);
+    }, 240000);
 });
 
 client.on('message', async (message) => {
