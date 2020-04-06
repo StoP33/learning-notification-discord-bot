@@ -20,7 +20,6 @@ class Notification
 
             if (this.loggedIn) {
                 return new Promise(async (resolve, reject) => {
-                    let lastKey = Object.keys(updates.data).length;
                     Object.keys(updates.data).forEach(async (key) => {
                         if (updates.data[key].itemSpecificData.notificationDetails.seen === false) {
                             let body = await this.bb.sendRequest({},
@@ -40,8 +39,8 @@ class Notification
                                 color: '#f50057'
                             });
                         }
-                        key >= (lastKey -1) ? resolve({ success: true, data: notices }) : '';
                     });
+                    setTimeout(() => {resolve({ success: true, data: notices })}, 120000);
                 });
             }
             return { success: false, data: 'login failed' };
