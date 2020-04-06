@@ -16,31 +16,35 @@ class Notification
         try {
             this.loggedIn = await this.bb.login();
             let updates = await this.bb.getUpdates();
+            let { data } = updates;
             let notices = [];
+            let blacklist = [];
 
             if (this.loggedIn) {
                 return new Promise(async (resolve, reject) => {
-                    Object.keys(updates.data).forEach(async (key) => {
-                        if (updates.data[key].itemSpecificData.notificationDetails.seen === false) {
+                    Object.keys(data).forEach(async (key) => {
+                        if (data[key].itemSpecificData.notificationDetails.seen === true) {
                             let body = await this.bb.sendRequest({},
-                                `${updates.data[key].se_itemUri || '#'}`);
+                                `${data[key].se_itemUri || '#'}`);
                             let fields = this.getLink(body);
 
                             notices.push({
+                                id: data[key].se_id,
                                 title:
-                                    `${updates.data[key].itemSpecificData.title || 'Unavailable title'} - ${updates.data[key].itemSpecificData.notificationDetails.announcementTitle || 'Unavailable title'}`,
+                                    `${data[key].itemSpecificData.title || 'Unavailable title'} - ${data[key].itemSpecificData.notificationDetails.announcementTitle || 'Unavailable title'}`,
                                 description:
-                                    `${h2p(updates.data[key].itemSpecificData.contentExtract) || 'Unavailable content'}`,
+                                    `${h2p(data[key].itemSpecificData.contentExtract) || 'Unavailable content'}`,
                                 url:
-                                    `${process.env.HOST}${updates.data[key].se_itemUri || '#'}`,
+                                    `${process.env.HOST}${data[key].se_itemUri || '#'}`,
                                 author:
-                                    `${updates.data[key].itemSpecificData.notificationDetails.announcementLastName || 'Anonymous'} ${updates.data[key].itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'}`,
+                                    `${data[key].itemSpecificData.notificationDetails.announcementLastName || 'Anonymous'} ${data[key].itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'}`,
                                 fields: fields,
                                 color: '#f50057'
                             });
+                            blacklist.push(data[key].se_id);
                         }
                     });
-                    setTimeout(() => {resolve({ success: true, data: notices })}, 120000);
+                    setTimeout(() => {resolve({ success: true, data: notices, blacklist: blacklist })}, 120000);
                 });
             }
             return { success: false, data: 'login failed' };

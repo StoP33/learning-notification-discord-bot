@@ -9,18 +9,20 @@ const token = process.env.TOKEN;
 const client = new Discord.Client();
 
 client.on('ready', () => {
-    console.log('Successful restart :D');
+    console.log('Oke! Code was updated :D');
     client.channels.cache.find(x => x.name === 'blackboard-notification').send('Successful restart :D');
 
     let successCounter = 0;
     let errorCounter = 0;
+    let blacklist = [];
     setInterval(async () => {
         let notify = new notification(username, password);
         let notices = await notify.getNotification();
 
         if (notices.success) {
             Object.keys(notices.data).forEach(function (key) {
-                const embed = new Discord.MessageEmbed()
+                if (!blacklist.includes(notices.data[key].id)) {
+                    const embed = new Discord.MessageEmbed()
                     .setTitle(notices.data[key].title)
                     .setURL(notices.data[key].url)
                     .setAuthor('From: ' + notices.data[key].author)
@@ -28,7 +30,9 @@ client.on('ready', () => {
                     .addFields(notices.data[key].fields)
                     .setTimestamp()
                     .setColor(notices.data[key].color);
-                client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                    client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                }
+                blacklist.push(notices.data[key].id);
             });
             successCounter++;
         }
