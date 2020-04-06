@@ -22,7 +22,7 @@ class Notification
                 return new Promise(async (resolve, reject) => {
                     let lastKey = Object.keys(updates.data).length;
                     Object.keys(updates.data).forEach(async (key) => {
-                        if (!updates.data[key].itemSpecificData.notificationDetails.seen) {
+                        if (updates.data[key].itemSpecificData.notificationDetails.seen === false) {
                             let body = await this.bb.sendRequest({},
                                 `${updates.data[key].se_itemUri || '#'}`);
                             let fields = this.getLink(body);
