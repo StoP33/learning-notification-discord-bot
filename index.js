@@ -1,10 +1,11 @@
 require('dotenv').config();
 const Discord = require('discord.js');
-const notification = require('./modules/notification');
+const IU = require('./modules/iu');
 
 const username = process.env.ID;
 const password = process.env.PASSWORD;
 const token = process.env.TOKEN;
+const cycle = process.env.CYCLE;
 
 const client = new Discord.Client();
 
@@ -16,33 +17,37 @@ client.on('ready', () => {
     let errorCounter = 0;
     let blacklist = [];
     setInterval(async () => {
-        let notify = new notification(username, password);
-        let notices = await notify.getNotSeenNotification();
+        let iu = new IU(username, password);
+        let notifcations = await iu.getUnseenBlackboardNotification();
 
-        if (notices.success) {
-            Object.keys(notices.data).forEach(async function (key) {
-                if (!blacklist.includes(notices.data[key].id)) {
-                    const embed = new Discord.MessageEmbed()
-                    .setTitle(notices.data[key].title)
-                    .setURL(notices.data[key].url)
-                    .setAuthor('From: ' + notices.data[key].author)
-                    .setDescription(notices.data[key].description)
-                    .addFields(notices.data[key].fields)
-                    .setTimestamp()
-                    .setColor(notices.data[key].color);
-                    let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
-                    msg.pin();
-                    blacklist.push(notices.data[key].id);
+        if (notifcations.success) {
+            Object.values(notifcations.data).forEach(async (value) => {
+                try {
+                    if(!blacklist.includes(value.se_id)) {
+                        let notification = await iu.filterUnseenBlackboardNotification(value);
+                        const embed = new Discord.MessageEmbed()
+                            .setTitle(notification.data.title)
+                            .setURL(notification.data.url)
+                            .setAuthor('From: ' + notification.data.author)
+                            .setDescription(notification.data.description)
+                            .addFields(notification.data.fields)
+                            .setTimestamp()
+                            .setColor(notification.data.color);
+                        let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                        msg.pin();
+                        blacklist.push(notification.data.id);
+                    }
+                } catch(error) {
+                    client.channels.cache.find(x => x.name === 'errors').send(error + '');
                 }
             });
             successCounter++;
-        }
-        else {
+        } else {
             client.channels.cache.find(x => x.name === 'errors').send(notices.data);
             errorCounter++;
         }
         client.user.setActivity(`e: ${errorCounter} - s: ${successCounter}`, { type: 'WATCHING' });
-    }, 240000);
+    }, cycle*1000);
 });
 
 client.on('message', async (message) => {

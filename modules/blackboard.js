@@ -74,11 +74,11 @@ class Blackboard
                 let data = JSON.parse(body3);
 
                 Object.keys(data).length === 0
-                    ? reject({success: false, data: 'error: can not get updates'})
+                    ? reject({success: false, data: 'Can not get updates'})
                     : resolve({success: true, data: data.sv_streamEntries});
             }
             catch(error) {
-                reject({success: false, data: 'system error: ' + error + ''});
+                reject({success: false, data: error + ''});
             }
         });
     }
