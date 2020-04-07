@@ -17,7 +17,7 @@ client.on('ready', () => {
     let blacklist = [];
     setInterval(async () => {
         let notify = new notification(username, password);
-        let notices = await notify.getNotification();
+        let notices = await notify.getNotSeenNotification();
 
         if (notices.success) {
             Object.keys(notices.data).forEach(async function (key) {

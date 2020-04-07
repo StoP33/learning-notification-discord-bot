@@ -11,7 +11,7 @@ class Notification
         this.loggedIn = false;
     }
 
-    async getNotification()
+    async getAllNotification()
     {
         try {
             this.loggedIn = await this.bb.login();
@@ -20,38 +20,47 @@ class Notification
             let notices = [];
             let blacklist = [];
 
-            if (this.loggedIn) {
-                return new Promise(async (resolve, reject) => {
-                    Object.keys(data).forEach(async (key) => {
-                        if (data[key].itemSpecificData.notificationDetails.seen === false) {
-                            let body = await this.bb.sendRequest({},
-                                `${data[key].se_itemUri || '#'}`);
-                            let fields = this.getLink(body);
-
-                            notices.push({
-                                id: data[key].se_id,
-                                title:
-                                    `${data[key].itemSpecificData.title || 'Unavailable title'} - ${data[key].itemSpecificData.notificationDetails.announcementTitle || 'Unavailable title'}`,
-                                description:
-                                    `${h2p(data[key].itemSpecificData.contentExtract) || 'Unavailable content'}`,
-                                url:
-                                    `${process.env.HOST}${data[key].se_itemUri || '#'}`,
-                                author:
-                                    `${data[key].itemSpecificData.notificationDetails.announcementLastName || 'Anonymous'} ${data[key].itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'}`,
-                                fields: fields,
-                                color: '#f50057'
-                            });
-                            blacklist.push(data[key].se_id);
-                        }
-                    });
-                    setTimeout(() => {resolve({ success: true, data: notices, blacklist: blacklist })}, 120000);
-                });
-            }
+            if (this.loggedIn) return { success: true, data: data };
             return { success: false, data: 'login failed' };
         }
         catch(error) {
             return { success: false, data: error + '' };
         }
+    }
+
+    async getNotSeenNotification() {
+        let notification = await this.getAllNotification();
+
+        if (!notification.success) return notification;
+
+        let { data } = notification;
+        let notices = [];
+        let blacklist = [];
+        return new Promise(async (resolve, reject) => {
+            Object.keys(data).forEach(async (key) => {
+                if (data[key].itemSpecificData.notificationDetails.seen === false) {
+                    let body = await this.bb.sendRequest({},
+                        `${data[key].se_itemUri || '#'}`);
+                    let fields = this.getLink(body);
+
+                    notices.push({
+                        id: data[key].se_id,
+                        title:
+                            `${data[key].itemSpecificData.title || 'Unavailable title'} - ${data[key].itemSpecificData.notificationDetails.announcementTitle || 'Unavailable title'}`,
+                        description:
+                            `${h2p(data[key].itemSpecificData.contentExtract) || 'Unavailable content'}`,
+                        url:
+                            `${process.env.HOST}${data[key].se_itemUri || '#'}`,
+                        author:
+                            `${data[key].itemSpecificData.notificationDetails.announcementLastName || 'Anonymous'} ${data[key].itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'}`,
+                        fields: fields,
+                        color: '#f50057'
+                    });
+                    blacklist.push(data[key].se_id);
+                }
+            });
+            setTimeout(() => {resolve({ success: true, data: notices, blacklist: blacklist })}, 120000);
+        });
     }
 
     getLink(html = '<div></div>')
