@@ -20,7 +20,7 @@ client.on('ready', () => {
         let notices = await notify.getNotification();
 
         if (notices.success) {
-            Object.keys(notices.data).forEach(function (key) {
+            Object.keys(notices.data).forEach(async function (key) {
                 if (!blacklist.includes(notices.data[key].id)) {
                     const embed = new Discord.MessageEmbed()
                     .setTitle(notices.data[key].title)
