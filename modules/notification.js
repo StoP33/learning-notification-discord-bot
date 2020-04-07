@@ -8,19 +8,15 @@ class Notification
     {
         this.host = host;
         this.bb = new Blackboard(username, password, host);
-        this.loggedIn = false;
     }
 
     async getAllNotification()
     {
         try {
-            this.loggedIn = await this.bb.login();
-            let updates = await this.bb.getUpdates();
-            let { data } = updates;
-            let notices = [];
-            let blacklist = [];
+            let loggedIn = await this.bb.login();
+            let { data } = await this.bb.getUpdates();
 
-            if (this.loggedIn) return { success: true, data: data };
+            if (loggedIn) return { success: true, data: data };
             return { success: false, data: 'login failed' };
         }
         catch(error) {
@@ -29,12 +25,11 @@ class Notification
     }
 
     async getNotSeenNotification() {
-        let notification = await this.getAllNotification();
+        let { success, data } = await this.getAllNotification();
 
-        if (!notification.success) return notification;
+        if (!success) return { success: false, data: data };
 
-        let { data } = notification;
-        let notices = [];
+        let notification = [];
         let blacklist = [];
         return new Promise(async (resolve, reject) => {
             Object.keys(data).forEach(async (key) => {
@@ -43,7 +38,7 @@ class Notification
                         `${data[key].se_itemUri || '#'}`);
                     let fields = this.getLink(body);
 
-                    notices.push({
+                    notification.push({
                         id: data[key].se_id,
                         title:
                             `${data[key].itemSpecificData.title || 'Unavailable title'} - ${data[key].itemSpecificData.notificationDetails.announcementTitle || 'Unavailable title'}`,
@@ -59,7 +54,11 @@ class Notification
                     blacklist.push(data[key].se_id);
                 }
             });
-            setTimeout(() => {resolve({ success: true, data: notices, blacklist: blacklist })}, 120000);
+            setTimeout(() => {resolve({
+                success: true,
+                data: notification,
+                blacklist: blacklist
+            })}, 120000);
         });
     }
 
