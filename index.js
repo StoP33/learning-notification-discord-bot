@@ -10,7 +10,7 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log('Oke! Code was updated :D');
-    client.channels.cache.find(x => x.name === 'blackboard-notification').send('Successful restart :D');
+    client.channels.cache.find(x => x.name === 'blackboard-notification').send('Oke! Code was updated :D');
 
     let successCounter = 0;
     let errorCounter = 0;
@@ -30,7 +30,8 @@ client.on('ready', () => {
                     .addFields(notices.data[key].fields)
                     .setTimestamp()
                     .setColor(notices.data[key].color);
-                    client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                    let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                    msg.pin();
                 }
                 blacklist.push(notices.data[key].id);
             });
