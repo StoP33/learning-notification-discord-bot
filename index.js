@@ -32,14 +32,13 @@ client.on('ready', () => {
                     .setColor(notices.data[key].color);
                     let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
                     msg.pin();
+                    blacklist.push(notices.data[key].id);
                 }
-                blacklist.push(notices.data[key].id);
             });
             successCounter++;
         }
         else {
-            //client.channels.cache.find(x => x.name === 'blackboard-notification').send(notices.data);
-            console.log(notices.data);
+            client.channels.cache.find(x => x.name === 'errors').send(notices.data);
             errorCounter++;
         }
         client.user.setActivity(`e: ${errorCounter} - s: ${successCounter}`, { type: 'WATCHING' });
