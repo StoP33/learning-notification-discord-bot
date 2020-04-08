@@ -77,7 +77,7 @@ class IU
                 $(id).find('a').each((index, element) => {
                     if ($(element).attr('href') != '#contextMenu' && $(element).attr('href') != '#close') {
                         links.push({
-                            name: $(element).text() || 'Unvailable title',
+                            name: 'Link title: ' + $(element).text(),
                             value: `${$(element).attr('href')[0] === '/' ? this.host + $(element).attr('href') : $(element).attr('href')}`,
                             inline: false
                         });
