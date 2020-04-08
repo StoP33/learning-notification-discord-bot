@@ -13,6 +13,7 @@ const iu = new IU();
 var blacklist = [];
 
 client.on('ready', () => {
+    console.log('Ok!');
     setInterval(async () => {
         iu.handleBlackboardNotification(username, password, async (notification) => {
             try {
