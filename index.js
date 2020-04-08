@@ -8,54 +8,37 @@ const token = process.env.TOKEN;
 const cycle = process.env.CYCLE;
 
 const client = new Discord.Client();
+const iu = new IU();
+
+var blacklist = [];
 
 client.on('ready', () => {
-    console.log('Oke! Code was updated :D');
-    client.channels.cache.find(x => x.name === 'blackboard-notification').send('Oke! Code was updated :D');
-
-    let successCounter = 0;
-    let errorCounter = 0;
-    let blacklist = [];
     setInterval(async () => {
-        let iu = new IU(username, password);
-        let notifcations = await iu.getUnseenBlackboardNotification();
-
-        if (notifcations.success) {
-            Object.values(notifcations.data).forEach(async (value) => {
-                try {
-                    if(!blacklist.includes(value.se_id)) {
-                        let notification = await iu.filterUnseenBlackboardNotification(value);
-                        const embed = new Discord.MessageEmbed()
-                            .setTitle(notification.data.title)
-                            .setURL(notification.data.url)
-                            .setAuthor('From: ' + notification.data.author)
-                            .setDescription(notification.data.description)
-                            .addFields(notification.data.fields)
-                            .setTimestamp()
-                            .setColor(notification.data.color);
-                        let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
-                        msg.pin();
-                        blacklist.push(notification.data.id);
-                    }
-                } catch(error) {
-                    client.channels.cache.find(x => x.name === 'errors').send(error + '');
+        iu.handleBlackboardNotification(username, password, async (notification) => {
+            try {
+                if(!blacklist.includes(notification.data.id)) {
+                    blacklist.push(notification.data.id);
+                    const embed = new Discord.MessageEmbed()
+                        .setTitle(notification.data.title)
+                        .setURL(notification.data.url)
+                        .setAuthor('From: ' + notification.data.author)
+                        .setDescription(notification.data.description)
+                        .addFields(notification.data.fields)
+                        .setTimestamp()
+                        .setColor(notification.data.color);
+                    let msg = await client.channels.cache.find(x => x.name === 'test').send(embed);
+                    msg.pin();
                 }
-            });
-            successCounter++;
-        } else {
-            client.channels.cache.find(x => x.name === 'errors').send(notices.data);
-            errorCounter++;
-        }
-        client.user.setActivity(`e: ${errorCounter} - s: ${successCounter}`, { type: 'WATCHING' });
+            } catch(error) {
+                client.channels.cache.find(x => x === 'errors').send(error + '');
+            }
+        });
     }, cycle*1000);
 });
 
 client.on('message', async (message) => {
     if (message.content === '!die') {
         message.channel.send('I still live');
-    }
-    else if (message.content === '!test') {
-        message.channel.send('!test con cac');
     }
 });
 
