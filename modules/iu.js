@@ -33,7 +33,7 @@ class IU
             try {
                 let notifications = await this.getAllBlackboardNotification();
                 Object.entries(notifications.data).forEach(([key, value]) => {
-                    !value.itemSpecificData.notificationDetails.seen ? delete notifications.data[key] : '';
+                    value.itemSpecificData.notificationDetails.seen ? delete notifications.data[key] : '';
                 });
                 resolve({ success: true, data: notifications.data });
             } catch(error) {
