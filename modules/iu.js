@@ -33,7 +33,7 @@ class IU
             try {
                 let notifications = await this.getAllBlackboardNotification();
                 Object.entries(notifications.data).forEach(([key, value]) => {
-                    value.itemSpecificData.notificationDetails.seen ? delete notifications.data[key] : '';
+                    !value.itemSpecificData.notificationDetails.seen ? delete notifications.data[key] : '';
                 });
                 resolve({ success: true, data: notifications.data });
             } catch(error) {
@@ -51,11 +51,11 @@ class IU
                 let links = this.getLink(html);
                 resolve({ success: true, data: {
                     id: notification.se_id,
-                    title: (notification.itemSpecificData.title || '')
+                    title: (notification.itemSpecificData.title + ' ' || '')
                             + (notification.itemSpecificData.notificationDetails.announcementTitle || ''),
                     description: notification.itemSpecificData.contentExtract || '',
                     url: this.host + notification.se_itemUri,
-                    author: (notification.itemSpecificData.notificationDetails.announcementLastName || 'Anonymous')
+                    author: (notification.itemSpecificData.notificationDetails.announcementLastName + ' ' || 'Anonymous')
                             + (notification.itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'),
                     fields: links,
                     color: '#f50057'
@@ -77,7 +77,7 @@ class IU
                 $(id).find('a').each((index, element) => {
                     if ($(element).attr('href') != '#contextMenu' && $(element).attr('href') != '#close') {
                         links.push({
-                            name: $(element).text(),
+                            name: $(element).text() || 'Unvailable title',
                             value: `${$(element).attr('href')[0] === '/' ? this.host + $(element).attr('href') : $(element).attr('href')}`,
                             inline: false
                         });
