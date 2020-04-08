@@ -26,7 +26,7 @@ client.on('ready', () => {
                         .addFields(notification.data.fields)
                         .setTimestamp()
                         .setColor(notification.data.color);
-                    let msg = await client.channels.cache.find(x => x.name === 'test').send(embed);
+                    let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
                     msg.pin();
                 }
             } catch(error) {
