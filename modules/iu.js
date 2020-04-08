@@ -1,5 +1,6 @@
 const Blackboard = require('./blackboard');
 const cheerio = require('cheerio');
+const h2p = require('html2plaintext');
 
 class IU
 {
@@ -51,11 +52,11 @@ class IU
                 let links = this.getLink(html);
                 resolve({ success: true, data: {
                     id: notification.se_id,
-                    title: (notification.itemSpecificData.title + ' ' || '')
+                    title: (notification.itemSpecificData.title || '')
                             + (notification.itemSpecificData.notificationDetails.announcementTitle || ''),
-                    description: notification.itemSpecificData.contentExtract || '',
+                    description: h2p(notification.itemSpecificData.contentExtract) || '',
                     url: this.host + notification.se_itemUri,
-                    author: (notification.itemSpecificData.notificationDetails.announcementLastName + ' ' || 'Anonymous')
+                    author: (notification.itemSpecificData.notificationDetails.announcementLastName || 'Anonymous - ')
                             + (notification.itemSpecificData.notificationDetails.announcementFirstName || 'Anonymous'),
                     fields: links,
                     color: '#f50057'
