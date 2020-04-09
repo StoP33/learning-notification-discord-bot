@@ -27,7 +27,7 @@ client.on('ready', () => {
                         .addFields(notification.data.fields)
                         .setTimestamp()
                         .setColor(notification.data.color);
-                    client.channels.cache.find(x => x.name === 'backboard-notification').send(embed);
+                    client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
                 } catch(error) {
                     client.channels.cache.find(x => x.name === 'errors').send(error + '');
                 }
