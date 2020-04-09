@@ -16,8 +16,8 @@ client.on('ready', () => {
     console.log('Ok!');
     setInterval(async () => {
         iu.handleBlackboardNotification(username, password, async (notification) => {
-            try {
-                if(!blacklist.includes(notification.data.id)) {
+            if(!blacklist.includes(notification.data.id)) {
+                try {
                     blacklist.push(notification.data.id);
                     const embed = new Discord.MessageEmbed()
                         .setTitle(notification.data.title)
@@ -27,11 +27,10 @@ client.on('ready', () => {
                         .addFields(notification.data.fields)
                         .setTimestamp()
                         .setColor(notification.data.color);
-                    let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
-                    msg.pin();
+                    client.channels.cache.find(x => x.name === 'test').send(embed);
+                } catch(error) {
+                    client.channels.cache.find(x => x.name === 'test').send(error + '');
                 }
-            } catch(error) {
-                client.channels.cache.find(x => x === 'errors').send(error + '');
             }
         });
     }, cycle*1000);
