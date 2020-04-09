@@ -13,7 +13,7 @@ const iu = new IU();
 var blacklist = [];
 
 client.on('ready', () => {
-    console.log('Ok!');
+    console.log('Okkkkkkkkkkkkkkkkkkkkkkkk!');
     setInterval(async () => {
         iu.handleBlackboardNotification(username, password, async (notification) => {
             if(!blacklist.includes(notification.data.id)) {
@@ -26,7 +26,8 @@ client.on('ready', () => {
                     .addFields(notification.data.fields)
                     .setTimestamp()
                     .setColor(notification.data.color);
-                client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                let msg = await client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
+                msg.pin();
             }
         })
         .catch(error => {
