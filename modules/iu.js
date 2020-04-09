@@ -12,22 +12,22 @@ class IU
         return new Promise(async(resolve, reject) => {
             try {
                 let blackboard = new Blackboard(username, password, this.host);
-                let notifcations = await blackboard.getUnseenBlackboardNotification();
+                let notifications = await blackboard.getUnseenBlackboardNotification();
 
-                if (notifcations.success) {
-                    Object.values(notifcations.data).forEach(async (value) => {
+                if (notifications.success) {
+                    Object.values(notifications.data).forEach(async (value) => {
                         try {
                             let notifcation = await blackboard.filterUnseenBlackboardNotification(value);
                             handle(notifcation);
                         } catch(error) {
-                            reject({ success: false, data: error + '' });
+                            reject({ success: false, data: error });
                         }
                     });
                 } else {
-                    reject({ success: false, data: notifcations.data });
+                    reject({ success: false, data: notifications.data });
                 }
             } catch(error) {
-                reject({ success: false, data: error + '' });
+                reject({ success: false, data: error });
             }
         });
     }

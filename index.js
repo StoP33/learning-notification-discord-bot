@@ -17,21 +17,20 @@ client.on('ready', () => {
     setInterval(async () => {
         iu.handleBlackboardNotification(username, password, async (notification) => {
             if(!blacklist.includes(notification.data.id)) {
-                try {
-                    blacklist.push(notification.data.id);
-                    const embed = new Discord.MessageEmbed()
-                        .setTitle(notification.data.title)
-                        .setURL(notification.data.url)
-                        .setAuthor('From: ' + notification.data.author)
-                        .setDescription(notification.data.description)
-                        .addFields(notification.data.fields)
-                        .setTimestamp()
-                        .setColor(notification.data.color);
-                    client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
-                } catch(error) {
-                    client.channels.cache.find(x => x.name === 'errors').send(error + '');
-                }
+                blacklist.push(notification.data.id);
+                const embed = new Discord.MessageEmbed()
+                    .setTitle(notification.data.title)
+                    .setURL(notification.data.url)
+                    .setAuthor('From: ' + notification.data.author)
+                    .setDescription(notification.data.description)
+                    .addFields(notification.data.fields)
+                    .setTimestamp()
+                    .setColor(notification.data.color);
+                client.channels.cache.find(x => x.name === 'blackboard-notification').send(embed);
             }
+        })
+        .catch(error => {
+            client.channels.cache.find(x => x.name === 'errors').send('Error: ' + error);
         });
     }, cycle*1000);
 });

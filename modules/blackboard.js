@@ -47,10 +47,10 @@ class Blackboard
                 let $ = cheerio.load(body);
                 let name = $('#global-nav-link').text();
 
-                name.length ? resolve(true) : reject(false);
+                name.length ? resolve({ success: true }) : reject({ success: false, data: 'Login failed' });
             }
             catch(error) {
-                reject(error);
+                reject({ success: false, data: error });
             }
         });
     }
@@ -79,7 +79,7 @@ class Blackboard
                     : resolve({success: true, data: data.sv_streamEntries});
             }
             catch(error) {
-                reject({success: false, data: error + ''});
+                reject({success: false, data: error });
             }
         });
     }
@@ -89,7 +89,7 @@ class Blackboard
         return new Promise(async (resolve, reject) => {
             try {
                 let loggedIn = await this.login();
-                if(!loggedIn) resolve({ success: false, data: 'Login failed' });
+                if(!loggedIn.success) resolve({ success: false, data: 'Login failed' });
                 let { success, data} =  await this.getUpdates();
                 if(success && loggedIn) resolve({ success: true, data: data });
             } catch(error) {
@@ -105,12 +105,13 @@ class Blackboard
         return new Promise(async (resolve, reject) => {
             try {
                 let notifications = await this.getAllBlackboardNotification();
+                if(!notifications.success) reject({ success: false, data: notifications.data });
                 Object.entries(notifications.data).forEach(([key, value]) => {
                     value.itemSpecificData.notificationDetails.seen ? delete notifications.data[key] : '';
                 });
                 resolve({ success: true, data: notifications.data });
             } catch(error) {
-                reject({ success: false, data: error + '' });
+                reject({ success: false, data: error });
             }
         });
     }
