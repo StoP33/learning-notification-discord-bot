@@ -27,9 +27,9 @@ client.on('ready', () => {
                         .addFields(notification.data.fields)
                         .setTimestamp()
                         .setColor(notification.data.color);
-                    client.channels.cache.find(x => x.name === 'test').send(embed);
+                    client.channels.cache.find(x => x.name === 'backboard-notification').send(embed);
                 } catch(error) {
-                    client.channels.cache.find(x => x.name === 'test').send(error + '');
+                    client.channels.cache.find(x => x.name === 'errors').send(error + '');
                 }
             }
         });
