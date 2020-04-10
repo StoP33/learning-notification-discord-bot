@@ -50,7 +50,7 @@ class Blackboard
                 name.length ? resolve({ success: true }) : reject({ success: false, data: 'Login failed' });
             }
             catch(error) {
-                reject({ success: false, data: error });
+                reject({ success: false, data: error.message });
             }
         });
     }
@@ -79,7 +79,7 @@ class Blackboard
                     : resolve({success: true, data: data.sv_streamEntries});
             }
             catch(error) {
-                reject({success: false, data: error });
+                reject({success: false, data: error.message });
             }
         });
     }
@@ -93,7 +93,7 @@ class Blackboard
                 let { success, data} =  await this.getUpdates();
                 if(success && loggedIn) resolve({ success: true, data: data });
             } catch(error) {
-                reject({ success: false, data: error });
+                reject({ success: false, data: error.message });
             }
 
             reject({ success: false, data: 'Have problems when get all Blackboard notifications' });
@@ -111,7 +111,7 @@ class Blackboard
                 });
                 resolve({ success: true, data: notifications.data });
             } catch(error) {
-                reject({ success: false, data: error });
+                reject({ success: false, data: error.message });
             }
         });
     }
@@ -135,7 +135,7 @@ class Blackboard
                     color: '#f50057'
                 } });
             } catch(error) {
-                reject({ success: false, data: error });
+                reject({ success: false, data: error.message });
             }
         });
     }

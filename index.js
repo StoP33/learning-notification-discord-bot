@@ -31,7 +31,7 @@ client.on('ready', () => {
             }
         })
         .catch(error => {
-            client.channels.cache.find(x => x.name === 'errors').send('Error: ' + error);
+            client.channels.cache.find(x => x.name === 'errors').send('Error: ' + error.message);
         });
     }, cycle*1000);
 });

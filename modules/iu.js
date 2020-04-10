@@ -27,7 +27,7 @@ class IU
                     reject({ success: false, data: notifications.data });
                 }
             } catch(error) {
-                reject({ success: false, data: error });
+                reject({ success: false, data: error.message });
             }
         });
     }
