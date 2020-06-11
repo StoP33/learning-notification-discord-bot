@@ -32,7 +32,7 @@ get notification on blackboard then send to discord server
   I set default host is https://blackboard.hcmiu.edu.vn
 </p>
 <p>
-  You can replace it with any host using blackboard.
+  You can replace it with any host using blackboard (in __construct of modules/iu.js and modules/blackboard.js).
 </p>
 <p>
   I tried to rewrite this code to easy for readability, but i lost it :'(
